@@ -5,6 +5,17 @@ import urllib3
 import re
 import json
 
+import house
+
+regions = {
+    'Devon':          'REGION^61297',
+    'Cornwall':       'REGION^61294',
+    'Herefordshire':  'REGION^61304',
+    'Worcestershire': 'REGION^61329',
+    'Warwickshire':   'REGION^61327',
+    'South Wales':    'REGION^91990',
+}
+
 red_flags = [
     # Common red flags we want to ignore
     "Under Offer",
@@ -45,7 +56,7 @@ def get_house_page(house_URL):
     return house
 
 
-class House:
+class House(house.House):
 
     def __init__(self, URL):
         self.URL = URL
@@ -101,6 +112,8 @@ class House:
         return locale.atof(price.replace('£', ''))
 
     def price_per_acre(self):
+        print(self.guide_price())
+        print(self.acres())
         return round(self.guide_price() / self.acres(), 1)
 
     def detect_red_flags(self):
