@@ -15,7 +15,7 @@ def examine_houses(houses):
             continue
 
         # We skip POA (since they're a pain to get) and anything that costs more than 10,000 GBP per acre
-        if house.guide_price() == 'POA' or house.price_per_acre() > 10000:
+        if house.guide_price() == 'POA' or house.price_per_acre() > 6000:
             print(f" - Skipped due to price per acre: {house.price_per_acre()}")
             continue
 
