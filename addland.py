@@ -135,7 +135,7 @@ def get_list_of_properties(county: string):
 
 def get_property_page(property_url):
     """
-    Returns json object from house_URL
+    Returns json object from property_url
     """
 
     driver.get(property_url)
@@ -153,9 +153,9 @@ def get_property_page(property_url):
 
 class House(house.House):
 
-    def __init__(self, URL):
-        self.URL = URL
-        self.page = get_property_page(self.URL)
+    def __init__(self, url):
+        self.url = url
+        self.page = get_property_page(self.url)
         self.data = self.extract_details()
 
     def extract_details(self):

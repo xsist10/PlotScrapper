@@ -3,11 +3,12 @@ import webbrowser
 
 import addland
 import rightmove
+import uklandandfarms
 
 
 def examine_houses(houses):
     for house in houses:
-        print(house.URL)
+        print(house.url)
         # Focused on properties between 15 and 150 acres
         # This excludes a lot of building plots due to size
         if house.acres() < 50 or house.acres() > 150:
@@ -26,7 +27,7 @@ def examine_houses(houses):
             continue
 
         # print(house.URL)
-        webbrowser.open(house.URL, new=2, autoraise=True)
+        webbrowser.open(house.url, new=2, autoraise=True)
         print(house.data)
         print()
 
@@ -34,7 +35,13 @@ def examine_houses(houses):
 if __name__ == '__main__':
 
     houses = []
+    urls = uklandandfarms.get_properties_for_region_and_country('', '')
+    for url in urls:
+        houses.append(uklandandfarms.House(url))
+    examine_houses(houses)
+
     for region, code in rightmove.regions.items():
+        houses = []
         print(f"Examining Region {region}....")
 
         print("Polling RightMove")

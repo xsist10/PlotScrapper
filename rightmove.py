@@ -45,12 +45,12 @@ http = urllib3.PoolManager()
 # Used to convert localized numbers to numbers
 locale.setlocale(locale.LC_NUMERIC, 'en_GB')
 
-def get_house_page(house_URL):
+def get_house_page(house_url):
     """
-    Returns house object from house_URL
+    Returns house object from house_url
     """
 
-    r = http.request('GET', house_URL)
+    r = http.request('GET', house_url)
     house = BeautifulSoup(r.data, 'html.parser')
 
     return house
@@ -58,9 +58,9 @@ def get_house_page(house_URL):
 
 class House(house.House):
 
-    def __init__(self, URL):
-        self.URL = URL
-        self.page = get_house_page(self.URL)
+    def __init__(self, url):
+        self.url = url
+        self.page = get_house_page(self.url)
         self.data = self.property_data()
 
     def property_data(self):
@@ -112,8 +112,6 @@ class House(house.House):
         return locale.atof(price.replace('£', ''))
 
     def price_per_acre(self):
-        print(self.guide_price())
-        print(self.acres())
         return round(self.guide_price() / self.acres(), 1)
 
     def detect_red_flags(self):

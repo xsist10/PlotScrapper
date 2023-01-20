@@ -1,6 +1,6 @@
 
 class House:
-    def __init__(self, URL):
+    def __init__(self, url):
         pass
 
     def acres(self):
@@ -13,4 +13,4 @@ class House:
         pass
 
     def detect_red_flags(self):
-        pass
+        return []
