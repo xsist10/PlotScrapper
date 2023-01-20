@@ -13,6 +13,7 @@ from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+import addland
 import house
 
 # Used to convert localized numbers to numbers
@@ -68,11 +69,21 @@ county_filter = "placeType=County&query={}&radius=0"
 size_filter = "maxSize=150&minSize=50"
 additional_filters = "dropdowns=720&filters=ls.3&filters=ls.4&filters=gpd.1&filters=gpd.2&filters=t.1&filters=t.3&showProListingsOnly=false"
 
-options = Options()
-options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
-driver = webdriver.Firefox(options=options)
+driver = False
 
 TIMEOUT = 30
+
+
+def setup():
+    options = Options()
+    options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
+    addland.driver = webdriver.Firefox(options=options)
+
+
+def shutdown():
+    if addland.driver:
+        addland.driver.close()
+
 
 def build_country_url(county: string):
     return "{}/land-search/{}/?{}&{}&{}&{}".format(

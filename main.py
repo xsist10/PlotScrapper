@@ -52,6 +52,8 @@ if __name__ == '__main__':
             houses.append(rightmove.House(url))
         examine_houses(houses)
 
+    addland.setup()
+
     houses = []
     for region in addland.regions:
         print(f"Examining Region {region}....")
@@ -60,3 +62,5 @@ if __name__ == '__main__':
         houses = addland.get_list_of_properties(region)
         print(f"Found {len(houses)} properties to examine")
         examine_houses(houses)
+
+    addland.shutdown()

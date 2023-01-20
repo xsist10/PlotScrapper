@@ -1,4 +1,3 @@
-=======
 # PlotScrapper
 
 Tool used to quickly find plots of lands to support [Protect Earth's](https://www.protect.earth/) reforestation efforts based on the land requirements.
