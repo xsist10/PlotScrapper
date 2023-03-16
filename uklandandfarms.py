@@ -60,9 +60,8 @@ def get_properties_for_region_and_country(region, county):
     property_urls = []
 
     while more_results:
-        url = "{}/Search/SearchResult.aspx?keyword=&Region={}&County={}&PageIndex={}&kw=&PropertyType=rural-properties" \
-              "&Status=sale&Maxprice=3000000".format(base_url, region, county, index)
-        print(url)
+        url = "{}/Search/SearchResult.aspx?keyword=&Region={}&County={}&PageIndex={}&kw=&PropertyType=land" \
+              "&Status=sale&Maxprice=1000000".format(base_url, region, county, index)
         headers = {'Cookie': 'ASP.NET_SessionId=hzxxhtfyslczsa55i1tdka45'}
 
         r = http.request('GET', url, headers=headers)
@@ -81,7 +80,7 @@ def get_properties_for_region_and_country(region, county):
                     full_url = base_url + url
                     property_urls.append(full_url)
                 else:
-                    print("Skipping " + url)
+                    print("Skipping " + url + " based on region")
         else:
             more_results = 0
 
@@ -138,7 +137,11 @@ class House(house.House):
             For Sale 
         """
 
-        title = self.page.select_one('div#maincontent h1').text
+        content = self.page.select_one('div#maincontent h1')
+        if not content:
+            print(self.page)
+            exit()
+        title = content.text
 
         # Acres
         pattern = '([0-9\.]+) acres'
@@ -147,8 +150,11 @@ class House(house.House):
         # Sale type
         # - For Sale
         # - Under Offer
+        self.data['sale_type'] = 'Unknown'
         pattern = '(For Sale|Under Offer)'
-        self.data['sale_type'] = re.findall(pattern, title, flags=re.IGNORECASE)[0]
+        sale_type = re.findall(pattern, title, flags=re.IGNORECASE);
+        if len(sale_type):
+            self.data['sale_type'] = sale_type[0]
 
         # Pricing type
         # - Guide Price
