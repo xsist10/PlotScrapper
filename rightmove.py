@@ -50,7 +50,9 @@ def get_house_page(house_url):
     Returns house object from house_url
     """
 
-    r = http.request('GET', house_url)
+    headers = {'USer-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
+
+    r = http.request('GET', house_url, headers=headers)
     house = BeautifulSoup(r.data, 'html.parser')
 
     return house
