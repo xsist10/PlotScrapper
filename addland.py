@@ -45,6 +45,7 @@ red_flags = [
     # Common red flags we want to ignore
     "Under Offer",
     "Peat bog",
+    "Blanket bog",
     "Tenure not vacant",
     "Grade 1",
     "Grade 2",
@@ -76,7 +77,7 @@ TIMEOUT = 30
 
 def setup():
     options = Options()
-    options.binary_location = r'C:\Program Files\Mozilla Firefox\firefox.exe'
+    #options.binary_location = r'/usr/bin/firefox'
     addland.driver = webdriver.Firefox(options=options)
 
 

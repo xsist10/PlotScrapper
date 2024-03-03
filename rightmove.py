@@ -8,18 +8,21 @@ import json
 import house
 
 regions = {
-    'Devon':          'REGION^61297',
-    'Cornwall':       'REGION^61294',
-    'Herefordshire':  'REGION^61304',
+    'Devon': 'REGION^61297',
+    'Cornwall': 'REGION^61294',
+    'Herefordshire': 'REGION^61304',
     'Worcestershire': 'REGION^61329',
-    'Warwickshire':   'REGION^61327',
-    'South Wales':    'REGION^91990',
+    'Warwickshire': 'REGION^61327',
+    'South Wales': 'REGION^91990',
+    'Swindon':  'USERDEFINEDAREA%5E%7B%22polylines%22%3A%22%7BufzHbvjJetAsst%40vyNpkHldQaqC%3Fdcx%40_j%5EaiG%22%7D',
+    'Bristol':  'USERDEFINEDAREA%5E%7B%22polylines%22%3A%22wkmzHhitNxmfA%60icB%7EvKirzAgkCmjq%40ivLqwPulMngKwnd%40eyf%40ydM%7C%7DuA%22%7D',
 }
 
 red_flags = [
     # Common red flags we want to ignore
     "Under Offer",
     "Peat bog",
+    "Blanket bog",
     "Tenure not vacant",
     "Grade 1",
     "Grade 2",
@@ -41,16 +44,41 @@ red_flags = [
     "pasture/arable land",
 ]
 
+headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 8_7_6; en-US) Gecko/20100101 Firefox/60.3'}
+
 http = urllib3.PoolManager()
 # Used to convert localized numbers to numbers
 locale.setlocale(locale.LC_NUMERIC, 'en_GB')
+
+
+def get_house_urls(region):
+    """
+    Returns a list of URLs of houses from a region
+    """
+
+    search_url = "https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier={}" \
+          "&radius=0.0&currencyCode=GBP" \
+          "&maxPrice=150000&numberOfPropertiesPerPage=499&propertyTypes=land&mustHave=&dontShow=" \
+          "&furnishTypes=&maxDaysSinceAdded=14&keywords=".format(region)
+
+    print(f"Polling RightMove: {search_url}")
+
+    r = http.request('GET', search_url, headers=headers)
+    property_links = set()
+    page = BeautifulSoup(r.data, 'html.parser')
+    property_links_objs = page.find_all('a', class_='propertyCard-link')
+    for property_links_obj in property_links_objs:
+        if property_links_obj.get("href"):
+            parts = property_links_obj["href"].split('?')
+            property_links.add("https://www.rightmove.co.uk" + parts[0])
+
+    return list(property_links)
+
 
 def get_house_page(house_url):
     """
     Returns house object from house_url
     """
-
-    headers = {'USer-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
 
     r = http.request('GET', house_url, headers=headers)
     house = BeautifulSoup(r.data, 'html.parser')

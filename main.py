@@ -1,4 +1,3 @@
-import rightmove_webscraper
 import webbrowser
 
 import addland
@@ -32,35 +31,8 @@ def examine_houses(houses):
         print()
 
 
-if __name__ == '__main__':
-
-    houses = []
-    urls = uklandandfarms.get_properties_for_region_and_country('', '')
-    for url in urls:
-        houses.append(uklandandfarms.House(url))
-    examine_houses(houses)
-
-    for region, code in rightmove.regions.items():
-        houses = []
-        print(f"Examining Region {region}....")
-
-        print("Polling RightMove")
-        url = "https://www.rightmove.co.uk/property-for-sale/find.html?locationIdentifier={}" \
-              "&maxPrice=150000&numberOfPropertiesPerPage=499&propertyTypes=land&mustHave=&dontShow" \
-              "=&furnishTypes=&maxDaysSinceAdded=14&keywords=".format(code)
-        rm = rightmove_webscraper.RightmoveData(url)
-        properties = rm.get_results.values.tolist()
-
-        # Get a unique list of URLs
-        urls = list(set(map(lambda a: a[3], properties)))
-
-        print(f"Found {len(urls)} properties to examine")
-        for url in urls:
-            houses.append(rightmove.House(url))
-        examine_houses(houses)
-
+def examine_add_land():
     addland.setup()
-
     houses = []
     for region in addland.regions:
         print(f"Examining Region {region}....")
@@ -69,5 +41,32 @@ if __name__ == '__main__':
         houses = addland.get_list_of_properties(region)
         print(f"Found {len(houses)} properties to examine")
         examine_houses(houses)
-
     addland.shutdown()
+
+
+def examine_uklandandfarms():
+    houses = []
+    urls = uklandandfarms.get_properties_for_region_and_country('', '')
+    for url in urls:
+        house = uklandandfarms.House(url)
+        if not house.invalid:
+            houses.append(house)
+    examine_houses(houses)
+
+
+def examine_rightmove():
+    for region, code in rightmove.regions.items():
+        houses = []
+        print(f"Examining Region {region}....")
+        urls = rightmove.get_house_urls(code)
+
+        print(f"Found {len(urls)} properties to examine")
+        for url in urls:
+            houses.append(rightmove.House(url))
+        examine_houses(houses)
+
+
+if __name__ == '__main__':
+    examine_add_land()
+    examine_uklandandfarms()
+    examine_rightmove()

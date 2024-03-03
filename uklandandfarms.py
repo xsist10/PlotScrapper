@@ -18,6 +18,7 @@ regions = [
 red_flags = [
     # Common red flags we want to ignore
     "Peat bog",
+    "Blanket bog",
     "Tenure not vacant",
     "Currently let",
     "Currently occupied",
@@ -103,6 +104,7 @@ class House(house.House):
     def __init__(self, url):
         self.url = url
         self.page = get_house_page(self.url)
+        self.invalid = True
         self.data = {}
         self.parse_property_data()
 
@@ -139,9 +141,11 @@ class House(house.House):
 
         content = self.page.select_one('div#maincontent h1')
         if not content:
-            print(self.page)
-            exit()
+            return
         title = content.text
+
+        if title == "Page not found":
+            return
 
         # Acres
         pattern = '([0-9\.]+) acres'
@@ -175,6 +179,8 @@ class House(house.House):
             self.data['price_per_acre'] = round(self.data['price'] / self.data['acres'], 1)
         else:
             self.data['price'] = 'POA'
+
+        self.invalid = False
 
     def acres(self):
         return self.data['acres']
